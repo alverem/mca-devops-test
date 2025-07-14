@@ -1,15 +1,10 @@
-# ---- Build Stage ----
-FROM eclipse-temurin:8u452-b09-jre-ubi9-minimal AS builder
+FROM eclipse-temurin:24-jdk-alpine AS builder
 WORKDIR /app
 COPY ../backend /app
 RUN /app/mvnw package
-ENV SPRING_PROFILES_ACTIVE=prod
-CMD ["java", "-jar", "/app/target/application-0.0.1-SNAPSHOT.jar"]
 
-# # ---- Run Stage ----
-# FROM eclipse-temurin:24-jre
-# WORKDIR /app
-# COPY --from=build /app/target/application-0.0.1-SNAPSHOT.jar /app/app.jar
-# EXPOSE 8080
-#ENV SPRING_PROFILES_ACTIVE=prod
-# ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+FROM eclipse-temurin:24-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/application-0.0.1-SNAPSHOT.jar /app/target/application-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java", "-jar", "/app/target/application-0.0.1-SNAPSHOT.jar"]
