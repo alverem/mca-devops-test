@@ -22,7 +22,21 @@ run_backend:
 
 docker_clean:
 	docker system prune
+	
 #-e SPRING_PROFILES_ACTIVE=prod \
 #	-e SPRING_POSTGRES_URL=jdbc:postgresql://localhost:5432/postgres \
 #	-e SPRING_POSTGRES_USERNAME=myapplication \
 #	-e SPRING_POSTGRES_PASSWORD=M3P@ssw0rd! \	
+
+build_fe:
+	cd .. && docker build -t frontend:1.0.3 -f infrastructure/docker/Dockerfile-frontend .
+
+deploy_fe:
+	kubectl apply -f frontend/fe-ns.yaml && \
+	kubectl apply -f frontend/
+
+delete_fe:
+	kubectl delete -f frontend/
+
+run_fe:
+	docker run --rm frontend:1.0.0 
