@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: my-backend:1.0.0
+        ports:
+        - containerPort: 8080
+          name: backend-port
+        env:
+        - name: SPRING_POSTGRES_URL
+          value: jdbc:postgresql://postgres-svc.postgres:5432/postgres
+        - name: SPRING_POSTGRES_USERNAME
+          value: myapplication
+        - name: SPRING_POSTGRES_PASSWORD
+          value: M3P@ssw0rd!
+        - name: SPRING_PROFILES_ACTIVE
+          value: prod
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
