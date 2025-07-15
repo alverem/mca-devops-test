@@ -4,5 +4,6 @@
 2. install make and execute `make build_all`
 
 ### TODO
-
+Add kustomize or helm
+Secret management
 Update README.md
