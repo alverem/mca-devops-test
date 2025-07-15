@@ -4,12 +4,16 @@ metadata:
   name: frontend-ingress
   namespace: frontend
   annotations:
-    # cert-manager.io/cluster-issuer: letsencrypt-prod
-    # cert-manager.io/acme-challenge-type: dns01
+    cert-manager.io/cluster-issuer: "letsencrypt-issuer"
+    kubernetes.io/ingress.class: "nginx"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - "fe.domain.com"
+      secretName: fe-tls
   rules:
-    - host: fe.alv.pp.ua
+    - host: fe.domain.com
       http:
         paths:
           - path: /

@@ -5,9 +5,9 @@ metadata:
   namespace: frontend
   labels:
     app: frontend
-  # annotations:
-  #   cert-manager.io/cluster-issuer: letsencrypt-prod
-  #   cert-manager.io/acme-challenge-type: dns01
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/acme-challenge-type: dns01
 spec:
   replicas: 1
   selector:
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: frontend:1.0.3
+          image: frontend:1.0.0
           ports:
             - containerPort: 80
               name: frontend

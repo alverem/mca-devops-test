@@ -1,25 +1,26 @@
+build_all: build_backend build_fe deploy_db deploy_backend deploy_fe
+
+destroy_all: delete_db delete_backend delete_fe docker_clean
+
+# DB
 deploy_db:
 	kubectl apply -f db/pg-ns.yaml && \
 	kubectl apply -f db/
 delete_db:
 	kubectl delete -f db/
 
-
+# Backend
 deploy_backend:
 	kubectl apply -f backend/backend-ns.yaml && \
 	kubectl apply -f backend/
 	
-
-
 delete_backend:
 	kubectl delete -f backend/
 
 build_backend:
-	cd .. && docker build -t backend:1.0.1 -f infrastructure/docker/Dockerfile-backend .
+	cd .. && docker build --no-cache -t  my-backend:1.0.0 -f infrastructure/docker/Dockerfile-backend .
 
-run_backend:
-	docker run --rm backend:1.0.1 
-
+# Frontend
 rebuild_fe: scale_down_fe docker_clean build_fe scale_up_fe
 
 scale_up_fe:
@@ -27,17 +28,9 @@ scale_up_fe:
 
 scale_down_fe:
 	kubectl scale deployment frontend --replicas=0 -n frontend && sleep 3
-
-docker_clean:
-	docker system prune -f && docker image prune -a -f
 	
-#-e SPRING_PROFILES_ACTIVE=prod \
-#	-e SPRING_POSTGRES_URL=jdbc:postgresql://localhost:5432/postgres \
-#	-e SPRING_POSTGRES_USERNAME=myapplication \
-#	-e SPRING_POSTGRES_PASSWORD=M3P@ssw0rd! \	
-
 build_fe:
-	cd .. && docker build --no-cache -t frontend:1.0.3 -f infrastructure/docker/Dockerfile-frontend .
+	cd .. && docker build --no-cache -t frontend:1.0.0 -f infrastructure/docker/Dockerfile-frontend .
 
 deploy_fe:
 	kubectl apply -f frontend/fe-ns.yaml && \
@@ -46,8 +39,8 @@ deploy_fe:
 delete_fe:
 	kubectl delete -f frontend/
 
-	
+# Clean
+docker_clean:
+	docker system prune -f && docker image prune -a -f
 
-run_fe:
-	docker run --rm frontend:1.0.0
 
