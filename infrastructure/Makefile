@@ -1,4 +1,4 @@
-build_all: build_backend build_fe deploy_db deploy_backend deploy_fe
+build_all: docker_clean build_backend build_fe deploy_db deploy_backend deploy_fe expose_backend
 
 destroy_all: delete_db delete_backend delete_fe docker_clean
 
@@ -19,6 +19,10 @@ delete_backend:
 
 build_backend:
 	cd .. && docker build --no-cache -t  my-backend:1.0.0 -f infrastructure/docker/Dockerfile-backend .
+
+
+expose_backend:
+	kubectl port-forward svc/backend-svc 8081:8080 -n backend
 
 # Frontend
 rebuild_fe: scale_down_fe docker_clean build_fe scale_up_fe
